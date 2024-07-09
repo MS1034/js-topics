@@ -16,6 +16,16 @@ let jsTopics = [
     }
 ]
 
+function* generatorOfIds(id=0) {
+    while(true)
+    {
+        yield id++;
+
+    }
+  }
+ let generator = generatorOfIds();
+
+
 function durationStr(
     time,
 )
@@ -30,7 +40,8 @@ function renderTableRows(
     let html = ""
     jsTopics.forEach((topic)=>
     {
-        html+= `<tr > <td> <input type="checkbox" class= "cb-visibility ml-4" ${topic.isChecked? "checked" : ""}> </td> 
+        topic.id = generator.next().value;
+        html+= `<tr id= "${topic.id}" > <td> <input  type="checkbox" class= "cb-visibility ml-4" > </td> 
         <td> ${topic.title}</td>
         <td> ${durationStr(topic.time)}</td>
         <td>  <a href="${topic.link}" class ="ubuntu">${topic.link} </a> </td>
@@ -42,10 +53,19 @@ function renderTableRows(
 
 function onToggleVisibility(cb)
 {
-    jsTopics.forEach((topic) => { topic.isChecked = cb.checked} )
-    let allCheckboxes = document.getElementsByClassName("cb-visibility")
-    allCheckboxes = Array.from(allCheckboxes)
-    allCheckboxes.forEach((checkbox)=>{checkbox.checked= cb.checked})
+    let table = document.getElementById("js-table")
+    for(let i = 0; i<table.rows.length; i++)
+    {
+        if(table.rows[i].id !== "js-table-header")
+        {
+            let tr = table.rows[i]
+            let td = tr.querySelector('td')
+            let cb = td.querySelector('input')
+            if(tr.style.display !== "none")
+                cb.checked = true
+        }
+    }
+    cb.checked = false;
 }
 
 function onDropdownChange(dropdown)
@@ -59,18 +79,17 @@ function onDropdownChange(dropdown)
         if(table.rows[i].id !== "js-table-header")
         {
             let tr = table.rows[i]
-            let td = tr.querySelector("td")
-            let cb = td.querySelector("input")
+            let id = tr.id
             if(option == "hide")
-                tr.style.display = cb?.checked ? "none" : "table-row";
+                tr.style.display = jsTopics[id].isChecked ? "none" : "table-row";
             else
-                tr.style.display = cb?.checked ? "table-row" : "none";
+                tr.style.display = jsTopics[id].isChecked ? "table-row" : "none";
         }
     }
 
 }
 
-function showPrevious()
+function changeVisibility()
 {
     let dropdown = document.getElementById('visibility-dropdown');
     let option = dropdown.value.toLowerCase();
@@ -82,10 +101,19 @@ function showPrevious()
             let tr = table.rows[i]
             let td = tr.querySelector('td')
             let cb = td.querySelector('input')
-            if(option == "hide")
-                tr.style.display =  "table-row" ;
-            else if(option == "show")
-                tr.style.display =  "table-row";
+            if(option == "hide" && cb.checked)
+            {
+                tr.style.display =  "none" ;
+                jsTopics[tr.id].isChecked =true;
+                cb.checked =false;
+            }
+            else if(option == "show" && cb.checked)
+            {
+                tr.style.display =  "none" ;
+                jsTopics[tr.id].isChecked =false;
+                cb.checked =false;
+            }
+
         }
     }
 }

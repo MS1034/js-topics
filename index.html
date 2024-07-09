@@ -18,11 +18,11 @@
     <label for="visibility">Choose visibility</label>
     <div class="flex items-center align-middle">
         <select class=" max-w-64 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " name="visibility" id = "visibility-dropdown" onchange="onDropdownChange(this)">
-        <option value="show">Show</option>
-        <option value="hide">Hide</option>
+        <option value="show" selected>Show</option>
+        <option value="hide" >Hide</option>
         </select>
 
-        <button id="prev-button" onclick="showPrevious()" class="ml-4  text-white bg-gray-400 hover:bg-gray-500 focus:outline-none  font-medium rounded-full text-sm px-5 py-2 text-center me-2 mb-2 ">
+        <button id="prev-button" onclick="changeVisibility()" class="ml-4  text-white bg-gray-400 hover:bg-gray-500 focus:outline-none  font-medium rounded-full text-sm px-5 py-2 text-center me-2 mb-2 ">
             Hide
         </button>
     </div>

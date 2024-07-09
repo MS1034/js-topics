@@ -37,6 +37,21 @@ function durationStr(
     return `${Math.floor(time/60)} hr ${Math.floor(time%60)} min`
 }
 
+// Search from list based on id and return index
+function search(id)
+{
+   for (let topic of jsTopics)
+   {
+       
+       id =  +id
+        if(topic.id === id)
+            return jsTopics.indexOf(topic)
+   }
+   return -1
+}
+
+
+
 
 // return string of table rows generated
 function renderTableRows(
@@ -57,7 +72,7 @@ function renderTableRows(
     return html
 }
 
-
+// Set/Reset select all checkbox
 function toggleSelection(cb)
 {
     let table = document.getElementById("js-table")
@@ -74,6 +89,7 @@ function toggleSelection(cb)
     }
 }
 
+// Filter rows based on selected option from dropdown menu and reset select all 
 function onDropdownChange(dropdown)
 {
     // Reset the selection
@@ -81,6 +97,7 @@ function onDropdownChange(dropdown)
     cbSelectAll.checked =false;
     toggleSelection(cbSelectAll)
 
+    //Filter
     let option = dropdown.value.toLowerCase();
     let button =  document.getElementById('prev-button')
     button.innerText = option == "hide" ? "Show" : "Hide"
@@ -90,16 +107,18 @@ function onDropdownChange(dropdown)
         if(table.rows[i].id !== "js-table-header")
         {
             let tr = table.rows[i]
-            let id = tr.id
-            if(option == "hide")
-                tr.style.display = jsTopics[id].isChecked ? "none" : "table-row";
-            else
-                tr.style.display = jsTopics[id].isChecked ? "table-row" : "none";
+            let id = search(tr.id)
+            if(id !== -1)
+                if(option == "hide")
+                    tr.style.display = jsTopics[id].isChecked ? "none" : "table-row";
+                else
+                    tr.style.display = jsTopics[id].isChecked ? "table-row" : "none";
         }
     }
 
 }
 
+// Event to change the toggle the visibility of selected rows
 function changeVisibility()
 {
     let dropdown = document.getElementById('visibility-dropdown');
@@ -112,22 +131,24 @@ function changeVisibility()
             let tr = table.rows[i]
             let td = tr.querySelector('td')
             let cb = td.querySelector('input')
-            if(option == "hide" && cb.checked)
+            let id = search(tr.id)
+            if(id!==-1 && option == "hide" && cb.checked)
             {
                 tr.style.display =  "none" ;
-                jsTopics[tr.id].isChecked =true;
+                jsTopics[id].isChecked =true;
                 cb.checked =false;
             }
-            else if(option == "show" && cb.checked)
+            else if(id!=-1 && option == "show" && cb.checked)
             {
                 tr.style.display =  "none" ;
-                jsTopics[tr.id].isChecked =false;
+                jsTopics[id].isChecked =false;
                 cb.checked =false;
             }
 
         }
     }
 }
+
 
 let table =document.getElementById("js-table")
 let tableRows = renderTableRows()

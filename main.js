@@ -1,3 +1,4 @@
+// List of all topics 
 let jsTopics = [
     {isChecked:false, 
     title: "Closure",
@@ -16,6 +17,8 @@ let jsTopics = [
     }
 ]
 
+
+// Generate unique id for each topic
 function* generatorOfIds(id=0) {
     while(true)
     {
@@ -26,6 +29,7 @@ function* generatorOfIds(id=0) {
  let generator = generatorOfIds();
 
 
+// Convert Int minutes to hr mins. 
 function durationStr(
     time,
 )
@@ -33,6 +37,8 @@ function durationStr(
     return `${Math.floor(time/60)} hr ${Math.floor(time%60)} min`
 }
 
+
+// return string of table rows generated
 function renderTableRows(
     
 )
@@ -41,7 +47,7 @@ function renderTableRows(
     jsTopics.forEach((topic)=>
     {
         topic.id = generator.next().value;
-        html+= `<tr id= "${topic.id}" > <td> <input  type="checkbox" class= "cb-visibility ml-4" > </td> 
+        html+= `<tr id= "${topic.id}" style="display: ${topic.isChecked? "table-row" : " none"} "> <td> <input  type="checkbox" class= "cb-visibility ml-4" > </td> 
         <td> ${topic.title}</td>
         <td> ${durationStr(topic.time)}</td>
         <td>  <a href="${topic.link}" class ="ubuntu">${topic.link} </a> </td>
@@ -51,7 +57,8 @@ function renderTableRows(
     return html
 }
 
-function onToggleVisibility(cb)
+
+function toggleSelection(cb)
 {
     let table = document.getElementById("js-table")
     for(let i = 0; i<table.rows.length; i++)
@@ -60,16 +67,20 @@ function onToggleVisibility(cb)
         {
             let tr = table.rows[i]
             let td = tr.querySelector('td')
-            let cb = td.querySelector('input')
+            let checkbox = td.querySelector('input')
             if(tr.style.display !== "none")
-                cb.checked = true
+                checkbox.checked = cb.checked
         }
     }
-    cb.checked = false;
 }
 
 function onDropdownChange(dropdown)
 {
+    // Reset the selection
+    let cbSelectAll = document.getElementById("select-all-cb")
+    cbSelectAll.checked =false;
+    toggleSelection(cbSelectAll)
+
     let option = dropdown.value.toLowerCase();
     let button =  document.getElementById('prev-button')
     button.innerText = option == "hide" ? "Show" : "Hide"

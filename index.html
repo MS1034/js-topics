@@ -30,16 +30,16 @@
     
     
     
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table   id="js-table" class="w-full text-sm text-left">
-        <caption class="p-5 text-lg font-semibold text-left ">
+    <div class=" bg-white relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table   id="js-table" class="w-full text-sm text-left ">
+        <caption class="p-5 text-lg font-semibold text-left bg-gray-800 text-gray-200">
             Course Content
-            <p class="mt-1 text-sm font-normal text-gray-500 ">List of all js topics that are needed to be covered in order to master JS.    </p>
+            <p class="mt-1 text-sm font-normal text-gray-#00 ">List of all js topics that are needed to be covered in order to master JS.    </p>
         </caption>
         <thead class="text-md text-gray-700 uppercase bg-gray-50">
 
             <tr id="js-table-header">
-              <th class=" py-3 "><input class="ml-4" type="checkbox" id="selectAll" onclick="onToggleVisibility(this)">     <label for="selectAll" class="ml-1">Selection</label>
+              <th class=" py-3 "><input class="ml-4" type="checkbox" id="select-all-cb" onclick="toggleSelection(this)">     <label for="select-all-cb" class="ml-1">Selection</label>
               </th>
               <th class="py-3 ">Title</th>
               <th class="py-3 ">Duration</th>

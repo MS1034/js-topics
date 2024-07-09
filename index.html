@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <title>JS: The Hard Part</title>
+</head>
+<body class="p-4 bg-[#f5f5f5]">
+    
+
+    
+    
+    
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table   id="js-table" class="w-full text-sm text-left">
+        <caption class="p-5 text-lg font-semibold text-left ">
+            Course Content
+            <p class="mt-1 text-sm font-normal text-gray-500 ">List of all js topics that are needed to be covered in order to master JS.    </p>
+        </caption>
+        <thead class="text-md text-gray-700 uppercase bg-gray-50">
+
+            <tr id="js-table-header">
+              <th class=" py-3 "><input class="ml-4" type="checkbox" id="selectAll" onclick="onToggleVisibility(this)">     <label for="selectAll" class="ml-1">Selection</label>
+              </th>
+              <th class="py-3 ">Title</th>
+              <th class="py-3 ">Duration</th>
+              <th class="py-3 ">Link</th>
+            </tr>
+        </thead>
+    </table>     
+</div>
+
+
+    <script defer src="main.js"></script>
+</body>
+</html>

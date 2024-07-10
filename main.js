@@ -16,7 +16,6 @@ let jsTopics = [
         link: "https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Manipulating_documents"
     }
 ]
-let svg = '<svg viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M32 241.6c-11.2 0-20-8.8-20-20s8.8-20 20-20l940 1.6c11.2 0 20 8.8 20 20s-8.8 20-20 20L32 241.6zM186.4 282.4c0-11.2 8.8-20 20-20s20 8.8 20 20v688.8l585.6-6.4V289.6c0-11.2 8.8-20 20-20s20 8.8 20 20v716.8l-666.4 7.2V282.4z" fill=""></path><path d="M682.4 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM367.2 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM524.8 867.2c-11.2 0-20-8.8-20-20V372c0-11.2 8.8-20 20-20s20 8.8 20 20v475.2c0.8 11.2-8.8 20-20 20zM655.2 213.6v-48.8c0-17.6-14.4-32-32-32H418.4c-18.4 0-32 14.4-32 32.8V208h-40v-42.4c0-40 32.8-72.8 72.8-72.8H624c40 0 72.8 32.8 72.8 72.8v48.8h-41.6z" fill=""></path></g></svg>'
 
 
 // Generate unique id for each topic
@@ -63,14 +62,15 @@ function renderTableRows(
     jsTopics.forEach((topic)=>
     {
         topic.id = generator.next().value;
-        html+= `<tr id= "${topic.id}" style="display: ${topic.isChecked? "table-row" : " none"} " onclick="toggleSelectionRow()"> <td> <input  type="checkbox" class= "cb-visibility ml-4" >   <label for="select-all-cb" class="ml-1">${topic.title}</label> </td> 
+        html+= `<tr id= "${topic.id}" style="display: ${topic.isChecked? "table-row" : " none"} " onclick="toggleSelectionRow(this)"> <td> <input  type="checkbox" class= "cb-visibility ml-4" >   <label for="select-all-cb" class="ml-1">${topic.title}</label> </td> 
         <td> ${durationStr(topic.time)}</td>
         <td>  <a href="${topic.link}" class ="ubuntu">${topic.link} </a> </td>
-       <td> <button type="button"
-                    class="btn btn-lg btn-outline-primary">
+       <td> <button type="button" 
+                    class="btn btn-lg btn-outline-primary" data-toggle="modal" data-target="#topicModal">
                 <i class="fa fa-edit"></i>
             </button> </td> </td>
        <td> <button type="button"
+       onclick="onTopicDelete(this)"
                     class="btn btn-lg btn-outline-danger">
                 <i class="fa fa-trash"></i>
             </button> </td>
@@ -178,6 +178,70 @@ function changeVisibility()
 }
 
 
+function onTopicDelete(event)
+{
+    id=event?.parentElement?.parentElement?.getAttribute("id")
+    id = +id
+    let result = confirm("Are you sure you want to delete this topiic.");
+    console.log(result)
+    if(result  && id >= 0)
+    {
+        let topicNode = document.getElementById(id)
+        topicNode.remove()
+        let idx  = search(id)
+        jsTopics.splice(idx,1)
+    }
+}
+
+function validateURL(urlString)
+{
+    try { 
+        return Boolean(new URL(urlString)); 
+    }
+    catch(e){ 
+        return false; 
+    }
+}
+
 let table =document.getElementById("js-table")
 let tableRows = renderTableRows()
 table.insertAdjacentHTML("beforeend",tableRows)
+let editedRow;
+
+$('#topicModal').on('show.bs.modal', function (event) {
+    editedRow = event?.relatedTarget?.parentElement?.parentElement;
+    id= editedRow?.getAttribute("id")
+    let idx = search(id)
+    if(idx>=0)
+    {
+        let topic = jsTopics[idx]
+        let modal = $(this)
+        modal.find('.modal-body #topic-title').val(topic.title)
+        modal.find('.modal-body #topic-time').val(topic.time)
+        modal.find('.modal-body #topic-link').val(topic.link)
+    }
+})
+
+$("#topic-form").submit(function(event){
+    let title = $("#topic-title").val()
+    let time = $("#topic-time").val()
+    let link = $("#topic-link").val()
+    let cells = editedRow.getElementsByTagName("td") 
+    let titleCell = cells[0]
+    let label = titleCell.querySelector("label")
+    label.innerText = title
+    let timeCell = cells[1]
+    timeCell.innerText = durationStr(time)
+    let linkCell = cells[2]
+    let anchor = linkCell.querySelector("a")
+    anchor.setAttribute("href", link)
+    anchor.innerText = link
+    
+    let idx = search(editedRow.id)
+    jsTopics[idx].title = title
+    jsTopics[idx].time = +time, 
+    jsTopics[idx].link = link, 
+      
+    event.preventDefault(); 
+    $('#topicModal').modal('toggle');
+  });

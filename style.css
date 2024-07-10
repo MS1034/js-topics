@@ -9,6 +9,7 @@
     font-size: small;
     
 }
+
 .ubuntu
 {
     font-family: "Ubuntu Mono", monospace;
@@ -19,3 +20,10 @@
     font-family: "Yusei Magic", sans-serif;
   }
 
+
+.input
+{
+    font-size: small;
+}
+
+  .close {display: none;}

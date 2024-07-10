@@ -62,8 +62,7 @@ function renderTableRows(
     jsTopics.forEach((topic)=>
     {
         topic.id = generator.next().value;
-        html+= `<tr id= "${topic.id}" style="display: ${topic.isChecked? "table-row" : " none"} "> <td> <input  type="checkbox" class= "cb-visibility ml-4" > </td> 
-        <td> ${topic.title}</td>
+        html+= `<tr id= "${topic.id}" style="display: ${topic.isChecked? "table-row" : " none"} " onclick="toggleSelectionRow()"> <td> <input  type="checkbox" class= "cb-visibility ml-4" >   <label for="select-all-cb" class="ml-1">${topic.title}</label> </td> 
         <td> ${durationStr(topic.time)}</td>
         <td>  <a href="${topic.link}" class ="ubuntu">${topic.link} </a> </td>
         </tr>`
@@ -73,7 +72,7 @@ function renderTableRows(
 }
 
 // Set/Reset select all checkbox
-function toggleSelection(cb)
+function toggleSelectionMaster(cb)
 {
     let table = document.getElementById("js-table")
     for(let i = 0; i<table.rows.length; i++)
@@ -89,13 +88,33 @@ function toggleSelection(cb)
     }
 }
 
+function toggleSelectionRow()
+{
+    let table = document.getElementById("js-table")
+    let flag = true;
+    for(let i = 0; i<table.rows.length; i++)
+    {
+        if(table.rows[i].id !== "js-table-header")
+        {
+            let tr = table.rows[i]
+            let td = tr.querySelector('td')
+            let checkbox = td.querySelector('input')
+            if(tr.style.display !== "none")
+                flag = flag && checkbox.checked 
+        }
+    }
+    let cbSelectAll = document.getElementById("select-all-cb")
+    cbSelectAll.checked = flag;
+    
+}
+
 // Filter rows based on selected option from dropdown menu and reset select all 
 function onDropdownChange(dropdown)
 {
     // Reset the selection
     let cbSelectAll = document.getElementById("select-all-cb")
     cbSelectAll.checked =false;
-    toggleSelection(cbSelectAll)
+    toggleSelectionMaster(cbSelectAll)
 
     //Filter
     let option = dropdown.value.toLowerCase();

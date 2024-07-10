@@ -62,23 +62,28 @@ function renderTableRows(
     jsTopics.forEach((topic)=>
     {
         topic.id = generator.next().value;
-        html+= `<tr id= "${topic.id}" style="display: ${topic.isChecked? "table-row" : " none"} " onclick="toggleSelectionRow(this)"> <td> <input  type="checkbox" class= "cb-visibility ml-4" >   <label for="select-all-cb" class="ml-1">${topic.title}</label> </td> 
+        html+= renderObject(topic)
+    }
+    )
+    return html
+}
+
+function renderObject(topic)
+{
+   return `<tr id= "${topic.id}" style="display: ${topic.isChecked? "table-row" : " none"} " onclick="toggleSelectionRow(this)"> <td> <input  type="checkbox" class= "cb-visibility ml-4" >   <label for="select-all-cb" class="ml-1">${topic.title}</label> </td> 
         <td> ${durationStr(topic.time)}</td>
         <td>  <a href="${topic.link}" class ="ubuntu">${topic.link} </a> </td>
        <td> <button type="button" 
                     class="btn btn-lg btn-outline-primary" data-toggle="modal" data-target="#topicModal">
                 <i class="fa fa-edit"></i>
-            </button> </td> </td>
-       <td> <button type="button"
-       onclick="onTopicDelete(this)"
-                    class="btn btn-lg btn-outline-danger">
-                <i class="fa fa-trash"></i>
-            </button> </td>
-
-        </tr>`
-    }
-    )
-    return html
+            </button>
+            <button type="button"
+        onclick="onTopicDelete(this)"
+                        class="btn btn-lg btn-outline-danger">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td> 
+             </tr>`
 }
 
 // Set/Reset select all checkbox
@@ -193,55 +198,96 @@ function onTopicDelete(event)
     }
 }
 
-function validateURL(urlString)
-{
-    try { 
-        return Boolean(new URL(urlString)); 
-    }
-    catch(e){ 
-        return false; 
-    }
-}
+// function validateURL(urlString)
+// {
+//     try { 
+//         return Boolean(new URL(urlString)); 
+//     }
+//     catch(e){ 
+//         return false; 
+//     }
+// }
 
 let table =document.getElementById("js-table")
 let tableRows = renderTableRows()
 table.insertAdjacentHTML("beforeend",tableRows)
 let editedRow;
+let isEditing;
 
 $('#topicModal').on('show.bs.modal', function (event) {
-    editedRow = event?.relatedTarget?.parentElement?.parentElement;
-    id= editedRow?.getAttribute("id")
-    let idx = search(id)
-    if(idx>=0)
+    isEditing = event.relatedTarget.parentElement.tagName !== "DIV"
+
+    if(isEditing)
     {
-        let topic = jsTopics[idx]
-        let modal = $(this)
-        modal.find('.modal-body #topic-title').val(topic.title)
-        modal.find('.modal-body #topic-time').val(topic.time)
-        modal.find('.modal-body #topic-link').val(topic.link)
+        editedRow = event?.relatedTarget?.parentElement?.parentElement;
+        id= editedRow?.getAttribute("id")
+        let idx = search(id)
+        if(idx>=0)
+        {
+            let topic = jsTopics[idx]
+            let modal = $(this)
+            modal.find('.modal-title').text("Editing Topic")
+            modal.find('.modal-body #topic-title').val(topic.title)
+            modal.find('.modal-body #topic-time').val(topic.time)
+            modal.find('.modal-body #topic-link').val(topic.link)
+        }
     }
+    else
+    { 
+        let modal = $(this)
+        modal.find('.modal-title').text("Adding Topic")
+        modal.find('.modal-body #topic-title').val("")
+        modal.find('.modal-body #topic-time').val("")
+        modal.find('.modal-body #topic-link').val("")
+
+    }
+   
 })
 
 $("#topic-form").submit(function(event){
     let title = $("#topic-title").val()
     let time = $("#topic-time").val()
     let link = $("#topic-link").val()
-    let cells = editedRow.getElementsByTagName("td") 
-    let titleCell = cells[0]
-    let label = titleCell.querySelector("label")
-    label.innerText = title
-    let timeCell = cells[1]
-    timeCell.innerText = durationStr(time)
-    let linkCell = cells[2]
-    let anchor = linkCell.querySelector("a")
-    anchor.setAttribute("href", link)
-    anchor.innerText = link
-    
-    let idx = search(editedRow.id)
-    jsTopics[idx].title = title
-    jsTopics[idx].time = +time, 
-    jsTopics[idx].link = link, 
-      
-    event.preventDefault(); 
-    $('#topicModal').modal('toggle');
+    if(isEditing)
+    {
+
+        let cells = editedRow.getElementsByTagName("td") 
+        let titleCell = cells[0]
+        let label = titleCell.querySelector("label")
+        label.innerText = title
+        let timeCell = cells[1]
+        timeCell.innerText = durationStr(time)
+        let linkCell = cells[2]
+        let anchor = linkCell.querySelector("a")
+        anchor.setAttribute("href", link)
+        anchor.innerText = link
+        
+        let idx = search(editedRow.id)
+        jsTopics[idx].title = title
+        jsTopics[idx].time = +time, 
+        jsTopics[idx].link = link, 
+          
+        event.preventDefault(); 
+        $('#topicModal').modal('toggle');
+        editedRow = null;
+    }
+    else
+    {
+        let topic = {
+            id: generator.next().value,
+            title: title,
+            time: time,
+            link: link,
+            isChecked: true,
+        }
+        jsTopics.push(topic)
+        let row = renderObject(topic)
+        console.log(row)
+        debugger
+        table.insertAdjacentHTML("beforeend",row)
+        event.preventDefault(); 
+        $('#topicModal').modal('toggle');
+        isEditing = false;
+        
+    }
   });

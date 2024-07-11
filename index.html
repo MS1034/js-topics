@@ -36,7 +36,7 @@
     </div>    
     </div>
     <div>
-        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#topicModal"><i class="fa fa-plus"></i> Add</button>
+        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#topic-form-modal"><i class="fa fa-plus"></i> Add</button>
 
     </div>
 
@@ -52,7 +52,7 @@
         <thead class="thead-ligth">
 
             <tr id="js-table-header">
-              <th class=" py-3 "><input class="ml-4" type="checkbox" id="select-all-cb" onclick="toggleSelectionMaster(this)">     <label for="select-all-cb" class="ml-1">Title</label>
+              <th class=" py-3 "><input class="ml-4" type="checkbox" id="select-all-cb" onchange="toggleSelectionMaster(this)">     <label for="select-all-cb" class="ml-1">Title</label>
               </th>
               <th class="py-3 ">Duration</th>
               <th class="py-3 ">Link</th>
@@ -62,7 +62,7 @@
     </table>     
 </div>
 
-<div class="modal fade" id="topicModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true" >
+<div class="modal fade" id="topic-form-modal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true" >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -75,15 +75,15 @@
         <form id="topic-form">
           <div class="form-group">
             <label for="topic-title" class="col-form-label">Title:</label>
-            <input type="text"  class="form-control" id="topic-title" required>
+            <input type="text" name="title"  class="form-control" id="topic-title" minlength="5" required>
           </div>
           <div class="form-group">
             <label for="topic-time" class="col-form-label">Duration in minutes:</label>
-            <input type="number" class="form-control" id="topic-time"  min="0" required></input>
+            <input type="number" name="time" class="form-control" id="topic-time"  min="0" required></input>
           </div>
           <div class="form-group">
             <label for="topic-link" class="col-form-label">Link:</label>
-            <input type="url" pattern="https://.*" class="form-control ubuntu" id="topic-link" required></input>
+            <input type="url" name="link" pattern="http[s]?://.*" class="form-control ubuntu" id="topic-link" required></input>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

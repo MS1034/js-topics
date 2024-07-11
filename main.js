@@ -70,11 +70,11 @@ function renderTableRows(
 
 function renderObject(topic)
 {
-   return `<tr id= "${topic.id}" style="display: ${topic.isChecked? "table-row" : " none"} " onclick="toggleSelectionRow(this)"> <td> <input  type="checkbox" class= "cb-visibility ml-4" >   <label for="select-all-cb" class="ml-1">${topic.title}</label> </td> 
+   return `<tr id= "${topic.id}" style="display: ${topic.isChecked? "table-row" : " none"} " > <td> <input  type="checkbox" class= "cb-visibility ml-4"  onclick="toggleSelectionRow(this)">   <label  class="ml-1">${topic.title}</label> </td> 
         <td> ${durationStr(topic.time)}</td>
         <td>  <a href="${topic.link}" class ="ubuntu">${topic.link} </a> </td>
        <td> <button type="button" 
-                    class="btn btn-lg btn-outline-primary" data-toggle="modal" data-target="#topicModal">
+                    class="btn btn-lg btn-outline-primary" data-toggle="modal" data-target="#topic-form-modal">
                 <i class="fa fa-edit"></i>
             </button>
             <button type="button"
@@ -89,6 +89,9 @@ function renderObject(topic)
 // Set/Reset select all checkbox
 function toggleSelectionMaster(cb)
 {
+    console.log(cb)
+    debugger
+
     let table = document.getElementById("js-table")
     for(let i = 0; i<table.rows.length; i++)
     {
@@ -187,7 +190,7 @@ function onTopicDelete(event)
 {
     id=event?.parentElement?.parentElement?.getAttribute("id")
     id = +id
-    let result = confirm("Are you sure you want to delete this topiic.");
+    let result = confirm("Are you sure you want to delete this row.");
     console.log(result)
     if(result  && id >= 0)
     {
@@ -198,24 +201,10 @@ function onTopicDelete(event)
     }
 }
 
-// function validateURL(urlString)
-// {
-//     try { 
-//         return Boolean(new URL(urlString)); 
-//     }
-//     catch(e){ 
-//         return false; 
-//     }
-// }
 
-let table =document.getElementById("js-table")
-let tableRows = renderTableRows()
-table.insertAdjacentHTML("beforeend",tableRows)
-let editedRow;
-let isEditing;
 
-$('#topicModal').on('show.bs.modal', function (event) {
-    isEditing = event.relatedTarget.parentElement.tagName !== "DIV"
+$('#topic-form-modal').on('show.bs.modal', function (event) {
+    let isEditing = event.relatedTarget.parentElement.tagName !== "DIV"
 
     if(isEditing)
     {
@@ -233,24 +222,27 @@ $('#topicModal').on('show.bs.modal', function (event) {
         }
     }
     else
-    { 
+    {
+        editedRow = null; 
         let modal = $(this)
         modal.find('.modal-title').text("Adding Topic")
         modal.find('.modal-body #topic-title').val("")
         modal.find('.modal-body #topic-time').val("")
         modal.find('.modal-body #topic-link').val("")
-
     }
    
 })
 
-$("#topic-form").submit(function(event){
-    let title = $("#topic-title").val()
-    let time = $("#topic-time").val()
-    let link = $("#topic-link").val()
-    if(isEditing)
+function onFormSubmit(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+	const dataObject = Object.fromEntries(data.entries());
+	console.log(dataObject);
+    const title = data.get("title");
+	const link = data.get("link");
+	const time = +data.get("time");
+    if(editedRow)
     {
-
         let cells = editedRow.getElementsByTagName("td") 
         let titleCell = cells[0]
         let label = titleCell.querySelector("label")
@@ -261,15 +253,10 @@ $("#topic-form").submit(function(event){
         let anchor = linkCell.querySelector("a")
         anchor.setAttribute("href", link)
         anchor.innerText = link
-        
         let idx = search(editedRow.id)
         jsTopics[idx].title = title
-        jsTopics[idx].time = +time, 
-        jsTopics[idx].link = link, 
-          
-        event.preventDefault(); 
-        $('#topicModal').modal('toggle');
-        editedRow = null;
+        jsTopics[idx].time = time
+        jsTopics[idx].link = link  
     }
     else
     {
@@ -282,12 +269,16 @@ $("#topic-form").submit(function(event){
         }
         jsTopics.push(topic)
         let row = renderObject(topic)
-        console.log(row)
-        debugger
-        table.insertAdjacentHTML("beforeend",row)
-        event.preventDefault(); 
-        $('#topicModal').modal('toggle');
-        isEditing = false;
-        
+        table.insertAdjacentHTML("beforeend",row)    
     }
-  });
+    $('#topic-form-modal').modal('toggle');
+    editedRow = null;
+}
+const table =document.getElementById("js-table")
+const tableRows = renderTableRows()
+table.insertAdjacentHTML("beforeend",tableRows)
+const form = document.getElementById("topic-form");
+form.addEventListener("submit", onFormSubmit);
+const formModal = document.getElementById("topic-form-modal");
+formModal.addEventListener("show.bs.modal", onFormSubmit);
+let editedRow;

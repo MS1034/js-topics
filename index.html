@@ -24,12 +24,12 @@
     <label for="visibility">Choose visibility</label>
     <div class="d-flex flex-row mb-3">
            
-            <select class="form-select col-sm" name="visibility" id = "visibility-dropdown" onchange="onDropdownChange(this)">
+            <select class="form-select col-sm" name="visibility" id = "visibility-dropdown" >
                 <option value="show" selected>Show</option>
                 <option value="hide" >Hide</option>
                 </select>
         
-            <button id="prev-button" onclick="changeVisibility()" class="btn btn-secondary col-sm">
+            <button id="prev-button"  class="btn btn-secondary col-sm">
                 Hide
             </button>
 
@@ -52,13 +52,16 @@
         <thead class="thead-ligth">
 
             <tr id="js-table-header">
-              <th class=" py-3 "><input class="ml-4" type="checkbox" id="select-all-cb" onchange="toggleSelectionMaster(this)">     <label for="select-all-cb" class="ml-1">Title</label>
+              <th class=" py-3 "><input class="ml-4" type="checkbox" id="select-all-cb">     <label for="select-all-cb" class="ml-1">Title</label>
               </th>
               <th class="py-3 ">Duration</th>
               <th class="py-3 ">Link</th>
               <th class="py-3 ">Actions</th>
             </tr>
         </thead>
+        <tbody>
+
+        </tbody>
     </table>     
 </div>
 
@@ -96,6 +99,6 @@
 </div>
 
 
-    <script defer src="main.js"></script>
+    <script  type="module" src="main.js"></script>
 </body>
 </html>

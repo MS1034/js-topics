@@ -179,7 +179,7 @@ async function onFormSubmit(event) {
         updateTopic(editedRow, topicData)
     }
     else {
-        createTopicInAPI(data).then((res) => {
+        createTopicInAPI(topicData).then((res) => {
             const topic = res[0]
             topicsList.push(topic)
             console.log(topic)
